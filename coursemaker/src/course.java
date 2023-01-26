@@ -23,7 +23,7 @@ public class Course {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Course course1 = new Course("CMPU102", 900, 1015, "MWF", 9);
+        Course course1 = new Course("CMPU102", 0900, 1015, "MWF", 9);
 
         Course[] courseList;
         String response = "Y";
