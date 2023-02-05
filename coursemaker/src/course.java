@@ -5,6 +5,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 public class Course {
     String courseCode;
     int rating;
@@ -25,9 +27,13 @@ public class Course {
     public String toString(){
         return this.courseCode;
     }
-//    let wrongText = "The sky is silver.";
-//    let silverRegex = /silver/;
-//wrongText.replace(silverRegex, "blue");
+
+    // new method for remove course
+    // method for edit course
+    // algorithm to prevent time clashes and then extract first four or n number of courses from sorted list
+
+    // list.pop() O(1)
+    // list.del(0) O(n)
     public static String extractNonNumeric(String input) {
         Pattern pattern = Pattern.compile("[0-9]");
         Matcher matcher = pattern.matcher(input);
@@ -79,7 +85,14 @@ public class Course {
 
             }
         for (Tuple<Integer, String> t : courseList) {
-            System.out.println(t);
+            System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
+        }
+        Collections.sort(courseList, new TupleComparator());
+        Collections.reverse(courseList);
+        System.out.println();
+        System.out.println("The course list sorted according to priority rating is");
+        for (Tuple<Integer, String> t : courseList) {
+            System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
         }
     }
 }
@@ -99,5 +112,12 @@ class Tuple<A, B> {
 
     public B getSecond() {
         return second;
+    }
+}
+
+class TupleComparator implements Comparator<Tuple<Integer, String>> {
+    @Override
+    public int compare(Tuple<Integer, String> t1, Tuple<Integer, String> t2) {
+        return t1.getFirst().compareTo(t2.getFirst());
     }
 }
