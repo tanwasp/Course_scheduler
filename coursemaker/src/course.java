@@ -1,5 +1,12 @@
 import java.net.StandardSocketOptions;
+import java.sql.SQLOutput;
+import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 public class Course {
     String courseCode;
     int rating;
@@ -14,18 +21,31 @@ public class Course {
         this.endTime = endTime;
         this.rating = rating;
         this.days = days;
-        this.major = courseCode; // need to use regular expression to get non number part of courseCode
+        this.major = extractNonNumeric(courseCode);
     }
 
     public String toString(){
         return this.courseCode;
     }
 
+    // new method for remove course
+    // method for edit course
+    // algorithm to prevent time clashes and then extract first four or n number of courses from sorted list
+
+    // list.pop() O(1)
+    // list.del(0) O(n)
+    public static String extractNonNumeric(String input) {
+        Pattern pattern = Pattern.compile("[0-9]");
+        Matcher matcher = pattern.matcher(input);
+        return matcher.replaceAll("");
+    }
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Course course1 = new Course("CMPU102", 900, 1015, "MWF", 9);
 
-        Course[] courseList;
+        List<Tuple<Integer, String>> courseList = new ArrayList<>();
+
         String response = "Y";
         while (response.equals("Y")) {
             // input for new course
@@ -40,14 +60,12 @@ public class Course {
                 startTime = in.nextInt();
             }
 
-
             System.out.println("Enter end Time (Ex: \"1015\"): ");
             int endTime = in.nextInt();
             while (endTime < 0 || endTime/100 > 23 || endTime/100 < 9|| endTime%100 > 60 ){
                 System.out.println("Please enter a valid time between 0900 and 2359 hours: ");
                 endTime = in.nextInt();
             }
-
 
             in.nextLine();
             System.out.println("Enter days of the week (Ex: \"MWF\")  (Monday - M, Tuesday - T, Wednesday - W, Thursday - R, Friday - F: ");
@@ -56,12 +74,50 @@ public class Course {
             int rating = in.nextInt();
 
             Course newCourse = new Course(courseCode, startTime, endTime, days, rating);
-            // courseList.add(newCourse);
+            courseList.add(new Tuple<>(newCourse.rating, newCourse.courseCode));
             in.nextLine();
             System.out.println("To enter a course, enter Y/N: ");
             response = in.nextLine();
 
             System.out.println(newCourse);
+            System.out.println("New course major is " + newCourse.major);
+            System.out.println();
+
+            }
+        for (Tuple<Integer, String> t : courseList) {
+            System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
         }
+        Collections.sort(courseList, new TupleComparator());
+        Collections.reverse(courseList);
+        System.out.println();
+        System.out.println("The course list sorted according to priority rating is");
+        for (Tuple<Integer, String> t : courseList) {
+            System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
+        }
+    }
+}
+
+class Tuple<A, B> {
+    private A first;
+    private B second;
+
+    public Tuple(A first, B second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    public A getFirst() {
+        return first;
+    }
+
+    public B getSecond() {
+        return second;
+    }
+}
+
+class TupleComparator implements Comparator<Tuple<Integer, String>> {
+    @Override
+    public int compare(Tuple<Integer, String> t1, Tuple<Integer, String> t2) {
+        return t1.getFirst().compareTo(t2.getFirst());
     }
 }
