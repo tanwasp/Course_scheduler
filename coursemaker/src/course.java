@@ -104,15 +104,30 @@ public class Course {
             for (Tuple<Integer, Course> t : courseList) {
                 System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
             }
+
+
             List<Course> schedule = new ArrayList<>();
             schedule.add(courseList.get(0).getSecond());
-            for (int i = 1; i < courseList.size(); i++){
+            double totalCredits = courseList.get(0).getSecond().credit;
+            int i = 1;
+            while (totalCredits < 4.5 && i < courseList.size()){
                 if (goodCourse(courseList.get(i-1).getSecond(), courseList.get(i).getSecond())){
                     schedule.add(courseList.get(i).getSecond());
+                    totalCredits += courseList.get(i).getSecond().credit;
                 }
+                i ++;
             }
+
+//            for (int i = 1; i < courseList.size(); i++){
+//                if (goodCourse(courseList.get(i-1).getSecond(), courseList.get(i).getSecond())){
+//                    schedule.add(courseList.get(i).getSecond());
+//                }
+//            }
             for (Course t : schedule){
                 System.out.println(t);
+            }
+            if (totalCredits < 3.5){
+                System.out.println("Please enter more courses.");
             }
         }
 }
