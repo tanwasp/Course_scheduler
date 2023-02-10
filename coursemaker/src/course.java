@@ -53,14 +53,15 @@ public class Course {
             System.out.println("Please enter a valid time between 0800 and 2159 hours: ");
             startTime = in.nextInt();
         }
-        System.out.println("Enter the course credit");
-        double credit = in.nextDouble();
+
         System.out.println("Enter end Time (Ex: \"1015\"): ");
         int endTime = in.nextInt();
         while (endTime < 0 || endTime / 100 > 23 || endTime / 100 < 9 || endTime % 100 > 60) {
             System.out.println("Please enter a valid time between 0900 and 2359 hours: ");
             endTime = in.nextInt();
         }
+        System.out.println("Enter the course credit");
+        double credit = in.nextDouble();
 
         in.nextLine();
         System.out.println("Enter days of the week (Ex: \"MWF\")  (Monday - M, Tuesday - T, Wednesday - W, Thursday - R, Friday - F: ");
@@ -70,28 +71,63 @@ public class Course {
         return new Course(courseCode, startTime, endTime, days, rating, credit);
 
     }
+    public static Boolean goodCourse(Course course1, Course course2){
+        if ((course2.startTime >= course1.startTime && course2.startTime <= course1.endTime) || (course2.endTime >= course1.startTime && course2.endTime <= course1.endTime)) {
+            for (int i = 0; i < course2.days.length(); i++) {
+                if (course1.days.contains(Character.toString(course2.days.charAt(i)))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
         public static void main(String []args ) {
             Scanner in = new Scanner(System.in);
-            List<Tuple<Integer, String>> courseList = new ArrayList<>();
+            List<Tuple<Integer, Course>> courseList = new ArrayList<>();
             String response = "Y";
             while (response.equals("Y")) {
                 // input for new course
                 Course newCourse = addCourse();
+                courseList.add(new Tuple<>(newCourse.rating, newCourse));
+                System.out.println(newCourse + " successfully added");
                 System.out.println("To enter a course, enter Y/N: ");
                 response = in.nextLine();
-                courseList.add(new Tuple<>(newCourse.rating, newCourse.courseCode));
-                System.out.println(newCourse + " successfully added");
             }
-            for (Tuple<Integer, String> t : courseList) {
+            for (Tuple<Integer, Course> t : courseList) {
                 System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
             }
             Collections.sort(courseList, new TupleComparator());
             Collections.reverse(courseList);
             System.out.println();
             System.out.println("The course list sorted according to priority rating is");
-            for (Tuple<Integer, String> t : courseList) {
+            for (Tuple<Integer, Course> t : courseList) {
                 System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
+            }
+
+
+            List<Course> schedule = new ArrayList<>();
+            schedule.add(courseList.get(0).getSecond());
+            double totalCredits = courseList.get(0).getSecond().credit;
+            int i = 1;
+            while (totalCredits < 4.5 && i < courseList.size()){
+                if (goodCourse(courseList.get(i-1).getSecond(), courseList.get(i).getSecond())){
+                    schedule.add(courseList.get(i).getSecond());
+                    totalCredits += courseList.get(i).getSecond().credit;
+                }
+                i ++;
+            }
+
+//            for (int i = 1; i < courseList.size(); i++){
+//                if (goodCourse(courseList.get(i-1).getSecond(), courseList.get(i).getSecond())){
+//                    schedule.add(courseList.get(i).getSecond());
+//                }
+//            }
+            for (Course t : schedule){
+                System.out.println(t);
+            }
+            if (totalCredits < 3.5){
+                System.out.println("Please enter more courses.");
             }
         }
 }

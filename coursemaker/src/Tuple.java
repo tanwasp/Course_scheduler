@@ -3,6 +3,7 @@ class Tuple<A, B> {
     private A first;
     private B second;
 
+
     public Tuple(A first, B second) {
         this.first = first;
         this.second = second;
@@ -15,4 +16,5 @@ class Tuple<A, B> {
     public B getSecond() {
         return second;
     }
+
 }
