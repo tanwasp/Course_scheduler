@@ -1,12 +1,9 @@
 import java.net.StandardSocketOptions;
 import java.sql.SQLOutput;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+
 public class Course {
 //    Data fields for the Course data type
     String courseCode;
@@ -46,20 +43,42 @@ public class Course {
 
         System.out.println("Enter courseCode (Ex: \"CMPU101\"): ");
         String courseCode = in.nextLine();
+        int startTime = 0;
         System.out.println("Enter start Time (Ex: \"0900\"): ");
-        int startTime = in.nextInt();
         // error check for startTime. Hour should be between 08 and 21. Minutes should be between 0 and 60.
-        while (startTime < 0 || startTime / 100 > 21 || startTime / 100 < 8 || startTime % 100 > 60) {
-            System.out.println("Please enter a valid time between 0800 and 2159 hours: ");
-            startTime = in.nextInt();
+        while (true) {
+            try {
+                startTime = in.nextInt();
+                if (!(startTime < 0 || startTime / 100 > 21 || startTime / 100 < 8 || startTime % 100 > 60)) {
+                    break;
+                }
+                else{
+                    System.out.println("Please enter a valid time between 0800 and 2159 hours: ");
+                }
+            } catch (InputMismatchException e){
+                System.out.println("Please enter a valid data type");
+                in.nextLine();
+            }
         }
 
         System.out.println("Enter end Time (Ex: \"1015\"): ");
-        int endTime = in.nextInt();
-        while (endTime < 0 || endTime / 100 > 23 || endTime / 100 < 9 || endTime % 100 > 60) {
-            System.out.println("Please enter a valid time between 0900 and 2359 hours: ");
-            endTime = in.nextInt();
+        int endTime = 0;
+        while (true) {
+            try {
+                endTime = in.nextInt();
+                if (!(endTime < 0 || endTime / 100 > 23 || endTime / 100 < 9 || endTime % 100 > 60)) {
+                    break;
+                }
+                else{
+                    System.out.println("Please enter a valid time between 0900 and 2359 hours: ");
+                }
+            } catch (InputMismatchException e){
+                System.out.println("Please enter a valid data type");
+                in.nextLine();
+            }
         }
+
+
         System.out.println("Enter the course credit");
         double credit = in.nextDouble();
 
@@ -69,7 +88,6 @@ public class Course {
         System.out.println("Enter the priority rating for this course out of 10 (Ex: \"9\"): ");
         int rating = in.nextInt();
         return new Course(courseCode, startTime, endTime, days, rating, credit);
-
     }
     public static Boolean goodCourse(Course course1, Course course2){
         if ((course2.startTime >= course1.startTime && course2.startTime <= course1.endTime) || (course2.endTime >= course1.startTime && course2.endTime <= course1.endTime)) {
@@ -94,16 +112,16 @@ public class Course {
                 System.out.println("To enter a course, enter Y/N: ");
                 response = in.nextLine();
             }
-            for (Tuple<Integer, Course> t : courseList) {
-                System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
-            }
+//            for (Tuple<Integer, Course> t : courseList) {
+//                System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
+//            }
             Collections.sort(courseList, new TupleComparator());
             Collections.reverse(courseList);
             System.out.println();
-            System.out.println("The course list sorted according to priority rating is");
-            for (Tuple<Integer, Course> t : courseList) {
-                System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
-            }
+//            System.out.println("The course list sorted according to priority rating is");
+//            for (Tuple<Integer, Course> t : courseList) {
+//                System.out.println(t.getSecond() + " priority rating: " + t.getFirst());
+//            }
 
 
             List<Course> schedule = new ArrayList<>();
@@ -115,7 +133,7 @@ public class Course {
                     schedule.add(courseList.get(i).getSecond());
                     totalCredits += courseList.get(i).getSecond().credit;
                 }
-                i ++;
+                i++;
             }
 
 //            for (int i = 1; i < courseList.size(); i++){
@@ -123,6 +141,12 @@ public class Course {
 //                    schedule.add(courseList.get(i).getSecond());
 //                }
 //            }
+
+            System.out.println("Here is the total course list");
+            for (Tuple<Integer, Course> t : courseList) {
+                System.out.println(t.getSecond());
+            }
+
             for (Course t : schedule){
                 System.out.println(t);
             }
@@ -131,6 +155,3 @@ public class Course {
             }
         }
 }
-
-
-
