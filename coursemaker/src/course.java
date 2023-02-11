@@ -7,14 +7,14 @@ import java.util.regex.Pattern;
 public class Course {
 //    Data fields for the Course data type
     String courseCode;
-    int rating;
+    double rating;
     int startTime;
     int endTime;
     double credit;
     String days;
     String major;
 
-    public Course(String courseCode, int startTime, int endTime, String days, int rating, double credit ) {
+    public Course(String courseCode, int startTime, int endTime, String days, double rating, double credit ) {
 //        data constructor for course data type with various data as arguments for data fields.
         this.courseCode = courseCode;
         this.startTime = startTime;
@@ -80,13 +80,42 @@ public class Course {
 
 
         System.out.println("Enter the course credit");
-        double credit = in.nextDouble();
-
+        double credit = 0;
+        while (true) {
+            try {
+                credit = in.nextDouble();
+                if (credit == 0.5 || credit == 1) {
+                    break;
+                }
+                else{
+                    System.out.println("Please enter a credit number for this course (0.5 or 1)");
+                }
+            } catch (InputMismatchException e){
+                System.out.println("Please enter a valid data type");
+                in.nextLine();
+            }
+        }
         in.nextLine();
         System.out.println("Enter days of the week (Ex: \"MWF\")  (Monday - M, Tuesday - T, Wednesday - W, Thursday - R, Friday - F: ");
+        // Check for errors in input days
         String days = in.nextLine();
-        System.out.println("Enter the priority rating for this course out of 10 (Ex: \"9\"): ");
-        int rating = in.nextInt();
+
+        System.out.println("Enter the priority rating for this course out of 10 (Ex: \"9.5\"): ");
+        double rating = 0;
+        while (true) {
+            try {
+                rating = in.nextDouble();
+                if (rating >= 0 && rating <= 10) {
+                    break;
+                }
+                else{
+                    System.out.println("Please enter a valid priority number between 0 and 10");
+                }
+            } catch (InputMismatchException e){
+                System.out.println("Please enter a valid data type");
+                in.nextLine();
+            }
+        }
         return new Course(courseCode, startTime, endTime, days, rating, credit);
     }
     public static Boolean goodCourse(Course course1, Course course2){
@@ -102,7 +131,7 @@ public class Course {
 
         public static void main(String []args ) {
             Scanner in = new Scanner(System.in);
-            List<Tuple<Integer, Course>> courseList = new ArrayList<>();
+            List<Tuple<Double, Course>> courseList = new ArrayList<>();
             String response = "Y";
             while (response.equals("Y")) {
                 // input for new course
@@ -143,7 +172,7 @@ public class Course {
 //            }
 
             System.out.println("Here is the total course list");
-            for (Tuple<Integer, Course> t : courseList) {
+            for (Tuple<Double, Course> t : courseList) {
                 System.out.println(t.getSecond());
             }
 
